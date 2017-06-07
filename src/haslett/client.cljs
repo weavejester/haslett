@@ -20,8 +20,12 @@
 (def json-source    (chan-fn (map #(js->clj (js/JSON.parse %)))))
 (def json-sink      (chan-fn (map #(js/JSON.stringify (clj->js %)))))
 
-(defn websocket [url]
-  (js/WebSocket. url))
+(defn websocket
+  ([url]
+   (websocket url {}))
+  ([url options]
+   (doto (js/WebSocket. url)
+     (aset "binaryType" (:binary-type options "arraybuffer")))))
 
 (defn close [socket]
   (.close socket))
