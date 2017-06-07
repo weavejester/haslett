@@ -1,23 +1,20 @@
 (ns haslett.client
-  (:refer-clojure :exclude [send]))
+  (:require [cljs.core.async :as a :refer [<! >!]])
+  (:require-macros [cljs.core.async.macros :refer [go-loop]]))
 
 (defn websocket
   ([url]
    (websocket url {}))
   ([url options]
-   (let [sock (js/WebSocket. url)]
-     (when-let [on-open    (:on-open options)]
-       (aset sock "onopen"    (fn [evt] (on-open sock evt))))
-     (when-let [on-close   (:on-close options)]
-       (aset sock "onclose"   (fn [evt] (on-close sock evt))))
-     (when-let [on-message (:on-message options)]
-       (aset sock "onmessage" (fn [evt] (on-message sock (.-data evt) evt))))
-     (when-let [on-error   (:on-error options)]
-       (aset sock "onerror"   (fn [evt] (on-error sock evt))))
-     sock)))
-
-(defn send [ws data]
-  (.send ws data))
-
-(defn close [ws]
-  (.close ws))
+   (let [source (:source options (a/chan))
+         sink   (:sink options (a/chan))
+         socket (js/WebSocket. url)
+         return (a/promise-chan)]
+     (aset socket "onopen"    (fn [_] (a/put! return {:source source, :sink sink})))
+     (aset socket "onclose"   (fn [_] (a/close! source) (a/close! sink)))
+     (aset socket "onmessage" (fn [e] (a/put! source (.-data e))))
+     (go-loop []
+       (when-let [msg (<! sink)]
+         (.send socket msg)
+         (recur)))
+     return)))

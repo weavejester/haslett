@@ -1,21 +1,12 @@
 (ns haslett.client-test
-  (:require [cljs.test :refer-macros [deftest is testing]]
-            [haslett.client :as haslett]))
+  (:require [cljs.test :refer-macros [deftest is testing async]]
+            [cljs.core.async :as a :refer [<! >!]]
+            [haslett.client :as haslett])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (deftest test-ws
-  (let [events (atom [])]
-    (haslett/websocket
-     "ws://echo.websocket.org"
-     {:on-open    (fn [ws]
-                    (swap! events conj [:open])
-                    (haslett/send ws "Hello World"))
-      :on-message (fn [ws data]
-                    (swap! events conj [:message])
-                    (haslett/close ws))
-      :on-close   (fn [ws]
-                    (swap! events conj [:close]))})
-    (js/setTimeout
-     #(is (= @events [[:open]
-                      [:message "Hello World"]
-                      [:close]]))
-     1000)))
+  (async done
+    (go (let [{:keys [sink source]} (<! (haslett/websocket "ws://echo.websocket.org"))]
+          (>! sink "Hello World")
+          (is (= (<! source) "Hello World"))
+          (done)))))
