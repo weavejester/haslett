@@ -1,4 +1,4 @@
-(ns haslett.core)
+(ns haslett.client)
 
 (defn foo
   "I don't do a whole lot."

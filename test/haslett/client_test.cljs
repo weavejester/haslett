@@ -1,6 +1,6 @@
-(ns haslett.core-test
+(ns haslett.client-test
   (:require [cljs.test :refer-macros [deftest is testing]]
-            [haslett.core]))
+            [haslett.client]))
 
 (deftest a-test
   (testing "FIXME, I fail."
