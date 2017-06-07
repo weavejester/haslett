@@ -12,6 +12,16 @@
             (is (= (<! source) {:hello "World"}))
             (done)))))
 
+  (testing "transit formatting"
+    (async done
+      (go (let [{:keys [sink source]}
+                (<! (haslett/websocket "ws://echo.websocket.org"
+                                       {:source (haslett/transit-source)
+                                        :sink   (haslett/transit-sink)}))]
+            (>! sink {:hello "World"})
+            (is (= (<! source) {:hello "World"}))
+            (done)))))
+
   (testing "json formatting"
     (async done
       (go (let [{:keys [sink source]}
