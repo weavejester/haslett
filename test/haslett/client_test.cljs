@@ -7,6 +7,6 @@
 (deftest test-ws
   (async done
     (go (let [{:keys [sink source]} (<! (haslett/websocket "ws://echo.websocket.org"))]
-          (>! sink "Hello World")
-          (is (= (<! source) "Hello World"))
+          (>! sink {:hello "World"})
+          (is (= (<! source) {:hello "World"}))
           (done)))))
