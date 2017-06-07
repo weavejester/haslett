@@ -20,19 +20,22 @@
 (def json-source    (chan-fn (map #(js->clj (js/JSON.parse %)))))
 (def json-sink      (chan-fn (map #(js/JSON.stringify (clj->js %)))))
 
-(defn websocket
-  ([url]
-   (websocket url {}))
-  ([url options]
-   (let [source (:source options (edn-source))
-         sink   (:sink options   (edn-sink))
-         socket (js/WebSocket. url)
-         return (a/promise-chan)]
+(defn websocket [url]
+  (js/WebSocket. url))
+
+(defn close [socket]
+  (.close socket))
+
+(defn connect
+  ([socket]
+   (connect socket (edn-source) (edn-sink)))
+  ([socket source sink]
+   (let [return (a/promise-chan)]
      (aset socket "onopen"    (fn [_] (a/put! return {:source source, :sink sink})))
      (aset socket "onclose"   (fn [_] (a/close! source) (a/close! sink)))
      (aset socket "onmessage" (fn [e] (a/put! source (.-data e))))
      (go-loop []
        (if-let [msg (<! sink)]
          (do (.send socket msg) (recur))
-         (.close socket)))
+         (close socket)))
      return)))
