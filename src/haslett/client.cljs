@@ -32,7 +32,7 @@
      (aset socket "onclose"   (fn [_] (a/close! source) (a/close! sink)))
      (aset socket "onmessage" (fn [e] (a/put! source (.-data e))))
      (go-loop []
-       (when-let [msg (<! sink)]
-         (.send socket msg)
-         (recur)))
+       (if-let [msg (<! sink)]
+         (do (.send socket msg) (recur))
+         (.close socket)))
      return)))
