@@ -11,11 +11,11 @@
     ([buf-or-n xform]            (chan buf-or-n xform nil))
     ([buf-or-n xform ex-handler] (a/chan buf-or-n (comp xf xform) ex-handler))))
 
-(def edn-source     (chan-fn (map edn/read-string)))
-(def edn-sink       (chan-fn (map pr-str)))
-
 (def transit-source (chan-fn (map #(transit/read (transit/reader :json) %))))
 (def transit-sink   (chan-fn (map #(transit/write (transit/writer :json) %))))
+
+(def edn-source     (chan-fn (map edn/read-string)))
+(def edn-sink       (chan-fn (map pr-str)))
 
 (def json-source    (chan-fn (map #(js->clj (js/JSON.parse %)))))
 (def json-sink      (chan-fn (map #(js/JSON.stringify (clj->js %)))))
@@ -32,7 +32,7 @@
 
 (defn connect
   ([socket]
-   (connect socket (edn-source) (edn-sink)))
+   (connect socket (transit-source) (transit-sink)))
   ([socket source sink]
    (let [return (a/promise-chan)]
      (aset socket "onopen"    (fn [_] (a/put! return {:source source, :sink sink})))

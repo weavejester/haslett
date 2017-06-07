@@ -14,10 +14,10 @@
             (ht/close socket)
             (done)))))
 
-  (testing "transit formatting"
+  (testing "edn formatting"
     (async done
       (go (let [socket (ht/websocket "ws://echo.websocket.org")
-                stream (<! (ht/connect socket (ht/transit-source) (ht/transit-sink)))]
+                stream (<! (ht/connect socket (ht/edn-source) (ht/edn-sink)))]
             (>! (:sink stream) {:hello "World"})
             (is (= (<! (:source stream)) {:hello "World"}))
             (ht/close socket)
