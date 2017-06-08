@@ -24,8 +24,9 @@
   ([url]
    (websocket url {}))
   ([url options]
-   (doto (js/WebSocket. url)
-     (aset "binaryType" (:binary-type options "arraybuffer")))))
+   (let [ws (js/WebSocket. url)]
+     (set! (.-binaryType ws) (:binary-type options "arraybuffer"))
+     ws)))
 
 (defn close [socket]
   (.close socket))
@@ -35,9 +36,9 @@
    (connect socket (transit-source) (transit-sink)))
   ([socket source sink]
    (let [return (a/promise-chan)]
-     (aset socket "onopen"    (fn [_] (a/put! return {:source source, :sink sink})))
-     (aset socket "onclose"   (fn [_] (a/close! source) (a/close! sink)))
-     (aset socket "onmessage" (fn [e] (a/put! source (.-data e))))
+     (set! (.-onopen socket)    (fn [_] (a/put! return {:source source, :sink sink})))
+     (set! (.-onclose socket)   (fn [_] (a/close! source) (a/close! sink)))
+     (set! (.-onmessage socket) (fn [e] (a/put! source (.-data e))))
      (go-loop []
        (if-let [msg (<! sink)]
          (do (.send socket msg) (recur))
