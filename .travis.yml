@@ -2,5 +2,6 @@ language: clojure
 before_script:
   - "lein run-echo-server &"
   - "SERVER_PID=$!"
+  - "sleep 15"
 after_script:
   - "kill $SERVER_PID"
