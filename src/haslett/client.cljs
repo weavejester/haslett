@@ -20,27 +20,24 @@
 (def json-source    (chan-fn (map #(js->clj (js/JSON.parse %)))))
 (def json-sink      (chan-fn (map #(js/JSON.stringify (clj->js %)))))
 
-(defn websocket
-  ([url]
-   (websocket url {}))
-  ([url options]
-   (let [ws (js/WebSocket. url)]
-     (set! (.-binaryType ws) (:binary-type options "arraybuffer"))
-     ws)))
-
-(defn close [socket]
-  (.close socket))
-
 (defn connect
-  ([socket]
-   (connect socket (transit-source) (transit-sink)))
-  ([socket source sink]
-   (let [return (a/promise-chan)]
-     (set! (.-onopen socket)    (fn [_] (a/put! return {:source source, :sink sink})))
-     (set! (.-onclose socket)   (fn [_] (a/close! source) (a/close! sink)))
-     (set! (.-onmessage socket) (fn [e] (a/put! source (.-data e))))
+  ([url]
+   (connect url {}))
+  ([url options]
+   (let [socket (js/WebSocket. url)
+         source (:source options (transit-source))
+         sink   (:sink options   (transit-sink))
+         stream {:socket socket, :source source, :sink sink}
+         return (a/promise-chan)]
+     (set! (.-binaryType socket) (:binary-type options "arraybuffer"))
+     (set! (.-onopen socket)     (fn [_] (a/put! return stream)))
+     (set! (.-onclose socket)    (fn [_] (a/close! source) (a/close! sink)))
+     (set! (.-onmessage socket)  (fn [e] (a/put! source (.-data e))))
      (go-loop []
        (if-let [msg (<! sink)]
          (do (.send socket msg) (recur))
          (close socket)))
      return)))
+
+(defn close [stream]
+  (.close (:socket stream)))
