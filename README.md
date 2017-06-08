@@ -59,6 +59,11 @@ and add tranducers:
              :sink   (a/chan 10)})
 ```
 
+When the WebSocket is closed, the `:sink` and `:source` channels are
+also closed. In addition, a map containing `:code` and `:reason` keys
+will be deliverd to a promise channel held in the `:close-status` key
+on the stream.
+
 ## License
 
 Copyright © 2017 James Reeves
