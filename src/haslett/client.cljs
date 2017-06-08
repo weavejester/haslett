@@ -32,9 +32,9 @@
      (set! (.-onclose socket)    (fn [_] (a/close! source) (a/close! sink)))
      (set! (.-onmessage socket)  (fn [e] (a/put! source (fmt/read format (.-data e)))))
      (go-loop []
-       (if-let [msg (<! sink)]
-         (do (.send socket (fmt/write format msg)) (recur))
-         (close socket)))
+       (when-let [msg (<! sink)]
+         (.send socket (fmt/write format msg))
+         (recur)))
      return)))
 
 (defn close
