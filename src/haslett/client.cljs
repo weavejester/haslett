@@ -25,12 +25,16 @@
          source (:source options (a/chan))
          sink   (:sink   options (a/chan))
          format (:format options fmt/identity)
-         stream {:socket socket, :source source, :sink sink}
-         return (a/promise-chan)]
+         status (a/promise-chan)
+         return (a/promise-chan)
+         stream {:socket socket, :source source, :sink sink, :close-status status}]
      (set! (.-binaryType socket) (name (:binary-type options :arraybuffer)))
      (set! (.-onopen socket)     (fn [_] (a/put! return stream)))
-     (set! (.-onclose socket)    (fn [_] (a/close! source) (a/close! sink)))
      (set! (.-onmessage socket)  (fn [e] (a/put! source (fmt/read format (.-data e)))))
+     (set! (.-onclose socket)    (fn [e]
+                                   (a/put! status {:reason (.-reason e), :code (.-code e)})
+                                   (a/close! source)
+                                   (a/close! sink)))
      (go-loop []
        (when-let [msg (<! sink)]
          (.send socket (fmt/write format msg))
@@ -40,4 +44,5 @@
 (defn close
   "Close a stream opened by connect."
   [stream]
-  (.close (:socket stream)))
+  (.close (:socket stream))
+  (:close-status stream))

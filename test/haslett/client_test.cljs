@@ -16,7 +16,7 @@
 
   (testing "transit formatting"
     (async done
-      (go (let [stream  (<! (ws/connect "ws://echo.websocket.org" {:format fmt/transit}))]
+      (go (let [stream (<! (ws/connect "ws://echo.websocket.org" {:format fmt/transit}))]
             (>! (:sink stream) {:hello "World"})
             (is (= (<! (:source stream)) {:hello "World"}))
             (ws/close stream)
@@ -24,7 +24,7 @@
 
   (testing "edn formatting"
     (async done
-      (go (let [stream  (<! (ws/connect "ws://echo.websocket.org" {:format fmt/edn}))]
+      (go (let [stream (<! (ws/connect "ws://echo.websocket.org" {:format fmt/edn}))]
             (>! (:sink stream) {:hello "World"})
             (is (= (<! (:source stream)) {:hello "World"}))
             (ws/close stream)
@@ -32,8 +32,15 @@
 
   (testing "json formatting"
     (async done
-      (go (let [stream  (<! (ws/connect "ws://echo.websocket.org" {:format fmt/json}))]
+      (go (let [stream (<! (ws/connect "ws://echo.websocket.org" {:format fmt/json}))]
             (>! (:sink stream) {:hello "World"})
             (is (= (<! (:source stream)) {"hello" "World"}))
             (ws/close stream)
+            (done)))))
+
+  (testing "close status"
+    (async done
+      (go (let [stream (<! (ws/connect "ws://echo.websocket.org"))]
+            (is (= (<! (ws/close stream))      {:code 1005, :reason ""}))
+            (is (= (<! (:close-status stream)) {:code 1005, :reason ""}))
             (done))))))
