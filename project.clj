@@ -9,9 +9,11 @@
                  [com.cognitect/transit-cljs "0.8.239"]]
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-doo "0.1.7"]]
-  :aliases {"test" ["with-profile" "test" "doo" "phantom" "test" "once"]}
+  :aliases {"test" ["with-profile" "test" "doo" "phantom" "test" "once"]
+            "run-echo-server" ["with-profile" "test" "run" "-m" "haslett.echo-server"]}
   :profiles
-  {:test {:cljsbuild
+  {:test {:dependencies [[http-kit "2.2.0"]]
+          :cljsbuild
           {:builds
            {:test
             {:source-paths ["src" "test"]
