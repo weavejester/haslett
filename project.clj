@@ -7,12 +7,12 @@
                  [org.clojure/clojurescript "1.9.562"]
                  [org.clojure/core.async "0.3.443"]
                  [com.cognitect/transit-cljs "0.8.239"]]
-  :plugins [[lein-cljsbuild "1.1.6"]
-            [lein-doo "0.1.7"]]
-  :aliases {"test" ["with-profile" "test" "doo" "phantom" "test" "once"]
-            "run-echo-server" ["with-profile" "test" "run" "-m" "haslett.echo-server"]}
+  :plugins [[lein-cljsbuild "1.1.6"]]
+  :aliases {"test" ["with-profile" "test" "run" "-m" "haslett.test-runner"]}
   :profiles
-  {:test {:dependencies [[http-kit "2.2.0"]]
+  {:test {:dependencies [[doo "0.1.7"]
+                         [http-kit "2.2.0"]]
+          :prep-tasks   ["compile" ["cljsbuild" "once"]]
           :cljsbuild
           {:builds
            {:test
@@ -20,4 +20,4 @@
              :compiler {:output-to "target/main.js"
                         :output-dir "target"
                         :main haslett.test-runner
-                        :optimizations :simple}}}}}})
+                        :optimizations :none}}}}}})
