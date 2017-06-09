@@ -31,10 +31,15 @@ Haslett provides a simple and idiomatic interface to using WebSockets:
 ```
 
 The `connect` function returns a promise channel that produces a map
-with three keys: `:socket`, `:source` and `:sink`.
+with three keys: `:socket`, `:close-status`, `:source` and `:sink`.
 
 `:socket` contains the JavaScript `WebSocket` object, in case you need
 to access it directly.
+
+`:close-status` contains a promise channel that a status map is
+delivered to when the socket is closed. The status map will provide a
+`:code` and `:reason` keys that will explain why the socket was
+closed.
 
 `:source` is a core.async channel to read from.
 
@@ -62,9 +67,8 @@ and add tranducers:
 ```
 
 When the WebSocket is closed, the `:sink` and `:source` channels are
-also closed. In addition, a map containing `:code` and `:reason` keys
-will be deliverd to a promise channel held in the `:close-status` key
-on the stream.
+also closed. In addition, a final status map will will be deliverd to
+a promise channel held in the `:close-status` key on the stream.
 
 ## License
 
