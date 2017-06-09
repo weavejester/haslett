@@ -33,17 +33,17 @@ Haslett provides a simple and idiomatic interface to using WebSockets:
 The `connect` function returns a promise channel that produces a map
 with three keys: `:socket`, `:close-status`, `:source` and `:sink`.
 
-`:socket` contains the JavaScript `WebSocket` object, in case you need
+* `:socket` contains the JavaScript `WebSocket` object, in case you need
 to access it directly.
 
-`:close-status` contains a promise channel that a status map is
+* `:close-status` contains a promise channel that a status map is
 delivered to when the socket is closed. The status map will provide a
 `:code` and `:reason` keys that will explain why the socket was
 closed.
 
-`:source` is a core.async channel to read from.
+* `:source` is a core.async channel to read from.
 
-`:sink` is a core.async channel to write to.
+* `:sink` is a core.async channel to write to.
 
 By default, Haslett sends raw strings, but we can change that by
 supplying a formatter. Haslett includes formatters for JSON, edn and
