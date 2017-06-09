@@ -8,9 +8,10 @@
   "Create a WebSocket to the specified URL, and returns a 'stream' map of three
   keys:
 
-    :socket - contains the WebSocket object
-    :source - a core.async channel to read from
-    :sink   - a core.async channel to write to
+    :socket       - contains the WebSocket object
+    :close-status - a promise channel that contains the final close status
+    :source       - a core.async channel to read from
+    :sink         - a core.async channel to write to
 
   Takes the following options:
 
