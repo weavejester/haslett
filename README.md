@@ -31,7 +31,7 @@ Haslett provides a simple and idiomatic interface to using WebSockets:
 ```
 
 The `connect` function returns a promise channel that produces a map
-with three keys: `:socket`, `:close-status`, `:source` and `:sink`.
+with four keys: `:socket`, `:close-status`, `:source` and `:sink`.
 
 * `:socket` contains the JavaScript `WebSocket` object, in case you need
 to access it directly.
