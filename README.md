@@ -22,7 +22,7 @@ Haslett provides a simple and idiomatic interface to using WebSockets:
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs.core.async :as a :refer [<! >!]]
             [haslett.client :as ws]
-            [haslett.format :as fmt)
+            [haslett.format :as fmt]))
 
 (go (let [stream (<! (ws/connect "ws://echo.websocket.org"))]
       (>! (:sink stream) "Hello World")
@@ -31,7 +31,7 @@ Haslett provides a simple and idiomatic interface to using WebSockets:
 ```
 
 The `connect` function returns a promise channel that produces a map
-with three keys: `:socket`, `:close-status`, `:source` and `:sink`.
+with four keys: `:socket`, `:close-status`, `:source` and `:sink`.
 
 * `:socket` contains the JavaScript `WebSocket` object, in case you need
 to access it directly.
@@ -67,8 +67,8 @@ and add tranducers:
 ```
 
 When the WebSocket is closed, the `:sink` and `:source` channels are
-also closed. In addition, a final status map will will be deliverd to
-a promise channel held in the `:close-status` key on the stream.
+also closed. In addition, a final status map will be deliverd to a
+promise channel held in the `:close-status` key on the stream.
 
 ## License
 
