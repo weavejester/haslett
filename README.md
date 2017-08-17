@@ -67,7 +67,7 @@ and add tranducers:
 ```
 
 When the WebSocket is closed, the `:sink` and `:source` channels are
-also closed. In addition, a final status map will be deliverd to a
+also closed. In addition, a final status map will be delivered to a
 promise channel held in the `:close-status` key on the stream.
 
 ## License
