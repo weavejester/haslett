@@ -43,3 +43,10 @@
           (is (= (<! (ws/close stream))      {:code 1005, :reason ""}))
           (is (= (<! (:close-status stream)) {:code 1005, :reason ""}))
           (done)))))
+
+(deftest test-connectin-fail
+  (async done
+    (go (let [stream (<! (ws/connect "ws://localhost:3201"))]
+          (is (= (<! (:source stream)) nil))
+          (is (= (<! (:close-status stream)) {:code 1006, :reason ""}))
+          (done)))))
