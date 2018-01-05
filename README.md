@@ -11,7 +11,7 @@ A lightweight WebSocket library for ClojureScript that uses
 
 Add the following dependency to your `project.clj` file:
 
-    [haslett "0.1.0"]
+    [haslett "0.1.1"]
 
 ## Usage
 
