@@ -1,4 +1,4 @@
-(defproject haslett "0.1.1"
+(defproject haslett "0.1.2"
   :description "A lightweight WebSocket library for ClojureScript"
   :url "https://github.com/weavejester/haslett"
   :license {:name "Eclipse Public License"
