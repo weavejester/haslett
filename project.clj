@@ -1,12 +1,12 @@
-(defproject haslett "0.1.2"
+(defproject haslett "0.1.3-alpha1"
   :description "A lightweight WebSocket library for ClojureScript"
   :url "https://github.com/weavejester/haslett"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.9.0"]
-                 [org.clojure/clojurescript "1.9.946"]
-                 [org.clojure/core.async "0.3.465"]
-                 [com.cognitect/transit-cljs "0.8.243"]]
+  :dependencies [[org.clojure/clojure "1.10.0"]
+                 [org.clojure/clojurescript "1.10.520"]
+                 [org.clojure/core.async "0.4.490"]
+                 [com.cognitect/transit-cljs "0.8.256"]]
   :plugins [[lein-cljsbuild "1.1.6"]]
   :aliases {"test" ["run" "-m" "haslett.test-runner"]}
   :profiles

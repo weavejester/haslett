@@ -9,6 +9,7 @@
   keys:
 
     :socket       - contains the WebSocket object
+    :connected?   - true if the websocket connection succeeded
     :close-status - a promise channel that contains the final close status
     :source       - a core.async channel to read from
     :sink         - a core.async channel to write to
@@ -23,22 +24,22 @@
   ([url]
    (connect url {}))
   ([url options]
-   (let [protocols (into-array (:protocols options []))
-         socket    (js/WebSocket. url protocols)
-         source    (:source options (a/chan))
-         sink      (:sink   options (a/chan))
-         format    (:format options fmt/identity)
-         status    (a/promise-chan)
-         return    (a/promise-chan)
-         stream    {:socket socket, :source source, :sink sink, :close-status status}]
+   (let [protocols    (into-array (:protocols options []))
+         socket       (js/WebSocket. url protocols)
+         source       (:source options (a/chan))
+         sink         (:sink   options (a/chan))
+         format       (:format options fmt/identity)
+         close-status (a/promise-chan)
+         return       (a/promise-chan)
+         stream       {:socket socket, :source source, :sink sink, :close-status close-status}]
      (set! (.-binaryType socket) (name (:binary-type options :arraybuffer)))
-     (set! (.-onopen socket)     (fn [_] (a/put! return stream)))
+     (set! (.-onopen socket)     (fn [_] (a/put! return (assoc stream :connected? true))))
      (set! (.-onmessage socket)  (fn [e] (a/put! source (fmt/read format (.-data e)))))
      (set! (.-onclose socket)    (fn [e]
-                                   (a/put! return stream)
-                                   (a/put! status {:reason (.-reason e), :code (.-code e)})
                                    (a/close! source)
-                                   (a/close! sink)))
+                                   (a/close! sink)
+                                   (a/put! close-status {:reason (.-reason e), :code (.-code e)})
+                                   (a/put! return stream)))
      (go-loop []
        (when-let [msg (<! sink)]
          (.send socket (fmt/write format msg))
