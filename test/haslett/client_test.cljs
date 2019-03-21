@@ -8,6 +8,7 @@
 (deftest test-defaults
   (async done
     (go (let [stream (<! (ws/connect "ws://localhost:3200"))]
+          (is (ws/connected? stream))
           (>! (:sink stream) "Hello World")
           (is (= (<! (:source stream)) "Hello World"))
           (ws/close stream)
@@ -47,6 +48,7 @@
 (deftest test-connectin-fail
   (async done
     (go (let [stream (<! (ws/connect "ws://localhost:3201"))]
+          (is (not (ws/connected? stream)))
           (is (= (<! (:source stream)) nil))
           (is (= (<! (:close-status stream)) {:code 1006, :reason ""}))
           (done)))))

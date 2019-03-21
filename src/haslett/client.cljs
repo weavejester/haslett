@@ -35,10 +35,10 @@
      (set! (.-onopen socket)     (fn [_] (a/put! return stream)))
      (set! (.-onmessage socket)  (fn [e] (a/put! source (fmt/read format (.-data e)))))
      (set! (.-onclose socket)    (fn [e]
-                                   (a/put! return stream)
                                    (a/put! status {:reason (.-reason e), :code (.-code e)})
                                    (a/close! source)
-                                   (a/close! sink)))
+                                   (a/close! sink)
+                                   (a/put! return stream)))
      (go-loop []
        (when-let [msg (<! sink)]
          (.send socket (fmt/write format msg))
@@ -50,3 +50,8 @@
   [stream]
   (.close (:socket stream))
   (:close-status stream))
+
+(defn connected?
+  "Return true if the stream is currently connected."
+  [{:keys [close-status]}]
+  (nil? (a/poll! close-status)))
