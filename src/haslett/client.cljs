@@ -19,7 +19,10 @@
     :source      - a custom channel to use as the source
     :sink        - a custom channel to use as the sink
     :protocols   - passed to the WebSocket, a vector of protocol strings
-    :binary-type - passed to the WebSocket, may be :blob or :arraybuffer"
+    :binary-type - passed to the WebSocket, may be :blob or :arraybuffer
+
+  The WebSocket may either be closed directly, or by closing the
+  stream's :sink channel."
   ([url]
    (connect url {}))
   ([url options]
@@ -42,7 +45,11 @@
      (go-loop []
        (when-let [msg (<! sink)]
          (.send socket (fmt/write format msg))
-         (recur)))
+         (recur))
+
+       (a/close! source)
+       (a/put! close-status {:reason "Closed by creator", :code 0})
+       (.close (:socket stream)))
      return)))
 
 (defn close

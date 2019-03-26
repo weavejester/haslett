@@ -52,3 +52,10 @@
           (is (= (<! (:source stream)) nil))
           (is (= (<! (:close-status stream)) {:code 1006, :reason ""}))
           (done)))))
+
+(deftest test-local-close
+  (async done
+    (go (let [stream (<! (ws/connect "ws://localhost:3200"))]
+          (a/close! (:sink stream))
+          (is (= (<! (:close-status stream)) {:code 0, :reason "Closed by creator"}))
+          (done)))))
