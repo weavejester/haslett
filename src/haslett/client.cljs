@@ -48,7 +48,7 @@
          (recur))
 
        (a/close! source)
-       (a/put! close-status {:reason "Closed by creator", :code 0})
+       (a/put! status {:reason "Closed by creator", :code 0})
        (.close (:socket stream)))
      return)))
 
