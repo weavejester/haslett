@@ -16,7 +16,7 @@
   (httpkit/run-server echo-handler {:port 3200}))
 
 (defn run-tests []
-  (doo/run-script :phantom compiler-opts))
+  (doo/run-script :chrome-headless compiler-opts))
 
 (defn -main []
   (println "Starting server")
