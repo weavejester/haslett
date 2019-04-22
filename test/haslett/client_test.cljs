@@ -45,7 +45,7 @@
           (is (= (<! (:close-status stream)) {:code 1005, :reason ""}))
           (done)))))
 
-(deftest test-connectin-fail
+(deftest test-connection-fail
   (async done
     (go (let [stream (<! (ws/connect "ws://localhost:3201"))]
           (is (not (ws/connected? stream)))
