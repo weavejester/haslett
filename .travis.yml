@@ -1,2 +1,10 @@
 language: clojure
 dist: trusty
+addons:
+  chrome: stable
+install:
+  - npm install karma karma-cljs-test --save-dev
+  - npm install -g karma-cli
+  - npm install karma-chrome-launcher --save-dev
+script:
+  - lein test
