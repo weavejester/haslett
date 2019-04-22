@@ -46,16 +46,13 @@
        (when-let [msg (<! sink)]
          (.send socket (fmt/write format msg))
          (recur))
-
-       (a/close! source)
-       (a/put! status {:reason "Closed by creator", :code 0})
-       (.close (:socket stream)))
+       (close stream))
      return)))
 
 (defn close
   "Close a stream opened by connect."
   [stream]
-  (.close (:socket stream))
+  (.close (:socket stream) 1000 "Closed by creator")
   (:close-status stream))
 
 (defn connected?
