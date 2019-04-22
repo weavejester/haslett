@@ -20,6 +20,8 @@
     :sink        - a custom channel to use as the sink
     :protocols   - passed to the WebSocket, a vector of protocol strings
     :binary-type - passed to the WebSocket, may be :blob or :arraybuffer
+    :close-chan? - true if channels should be closed if WebSocket is closed
+                   (defaults to true)
 
   The WebSocket may either be closed directly, or by closing the
   stream's :sink channel."
@@ -33,14 +35,15 @@
          format    (:format options fmt/identity)
          status    (a/promise-chan)
          return    (a/promise-chan)
+         close?    (:close-chan? options true)
          stream    {:socket socket, :source source, :sink sink, :close-status status}]
      (set! (.-binaryType socket) (name (:binary-type options :arraybuffer)))
      (set! (.-onopen socket)     (fn [_] (a/put! return stream)))
      (set! (.-onmessage socket)  (fn [e] (a/put! source (fmt/read format (.-data e)))))
      (set! (.-onclose socket)    (fn [e]
                                    (a/put! status {:reason (.-reason e), :code (.-code e)})
-                                   (a/close! source)
-                                   (a/close! sink)
+                                   (when close? (a/close! source))
+                                   (when close? (a/close! sink))
                                    (a/put! return stream)))
      (go-loop []
        (when-let [msg (<! sink)]

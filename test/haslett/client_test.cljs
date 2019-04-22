@@ -62,3 +62,12 @@
           (is (= (<! (:close-status stream)) {:code 1000, :reason "Closed by creator"}))
           (is (ap/closed? (:source stream)))
           (done)))))
+
+(deftest test-chans-not-closed
+  (async done
+    (go (let [stream (<! (ws/connect "ws://localhost:3200" {:close-chan? false}))]
+          (ws/close stream)
+          (is (= (<! (:close-status stream)) {:code 1000, :reason "Closed by creator"}))
+          (is (not (ap/closed? (:sink stream))))
+          (is (not (ap/closed? (:source stream))))
+          (done)))))
