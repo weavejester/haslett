@@ -4,6 +4,12 @@
             [haslett.format :as fmt])
   (:require-macros [cljs.core.async.macros :refer [go-loop]]))
 
+(defn close
+  "Close a stream opened by connect."
+  [stream]
+  (.close (:socket stream) 1000 "Closed by creator")
+  (:close-status stream))
+
 (defn connect
   "Create a WebSocket to the specified URL, and returns a 'stream' map of four
   keys:
@@ -51,12 +57,6 @@
          (recur))
        (close stream))
      return)))
-
-(defn close
-  "Close a stream opened by connect."
-  [stream]
-  (.close (:socket stream) 1000 "Closed by creator")
-  (:close-status stream))
 
 (defn connected?
   "Return true if the stream is currently connected."
