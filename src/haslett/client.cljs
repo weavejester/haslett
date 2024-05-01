@@ -1,8 +1,7 @@
 (ns haslett.client
   "A namespace for opening WebSockets in ClojureScript."
-  (:require [cljs.core.async :as a :refer [<! >!]]
-            [haslett.format :as fmt])
-  (:require-macros [cljs.core.async.macros :refer [go-loop]]))
+  (:require [cljs.core.async :as a :refer [<! >! go-loop]]
+            [haslett.format :as fmt]))
 
 (defn close
   "Close a stream opened by connect."

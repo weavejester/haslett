@@ -17,8 +17,7 @@ Haslett provides a simple and idiomatic interface to using WebSockets:
 
 ```clojure
 (ns example.core
-  (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [cljs.core.async :as a :refer [<! >!]]
+  (:require [cljs.core.async :as a :refer [<! >! go]]
             [haslett.client :as ws]
             [haslett.format :as fmt]))
 

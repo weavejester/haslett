@@ -1,10 +1,9 @@
 (ns haslett.client-test
   (:require [cljs.test :refer-macros [deftest is testing async]]
-            [cljs.core.async :as a :refer [<! >!]]
+            [cljs.core.async :as a :refer [<! >! go]]
             [cljs.core.async.impl.protocols :as ap]
             [haslett.client :as ws]
-            [haslett.format :as fmt])
-  (:require-macros [cljs.core.async.macros :refer [go]]))
+            [haslett.format :as fmt]))
 
 (deftest test-defaults
   (async done
