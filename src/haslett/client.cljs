@@ -1,6 +1,6 @@
 (ns haslett.client
   "A namespace for opening WebSockets in ClojureScript."
-  (:require [cljs.core.async :as a :refer [<! >! go-loop]]
+  (:require [cljs.core.async :as a :refer [<! go-loop]]
             [haslett.format :as fmt]))
 
 (defn close

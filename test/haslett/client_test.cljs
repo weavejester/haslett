@@ -1,5 +1,5 @@
 (ns haslett.client-test
-  (:require [cljs.test :refer-macros [deftest is testing async]]
+  (:require [cljs.test :refer-macros [deftest is async]]
             [cljs.core.async :as a :refer [<! >! go]]
             [cljs.core.async.impl.protocols :as ap]
             [haslett.client :as ws]
@@ -12,11 +12,12 @@
           (>! (:out stream) "Hello World")
           (is (= (<! (:in stream)) "Hello World"))
           (ws/close stream)
-          (done))))) 
+          (done)))))
 
 (deftest test-transit
   (async done
-    (go (let [stream (<! (ws/connect "ws://localhost:3200" {:format fmt/transit}))]
+    (go (let [stream (<! (ws/connect "ws://localhost:3200"
+                                     {:format fmt/transit}))]
           (>! (:out stream) {:hello "World"})
           (is (= (<! (:in stream)) {:hello "World"}))
           (ws/close stream)
@@ -41,8 +42,10 @@
 (deftest test-close
   (async done
     (go (let [stream (<! (ws/connect "ws://localhost:3200"))]
-          (is (= (<! (ws/close stream))      {:code 1000, :reason "Closed by creator"}))
-          (is (= (<! (:close-status stream)) {:code 1000, :reason "Closed by creator"}))
+          (is (= (<! (ws/close stream))
+                 {:code 1000, :reason "Closed by creator"}))
+          (is (= (<! (:close-status stream))
+                 {:code 1000, :reason "Closed by creator"}))
           (done)))))
 
 (deftest test-connection-fail
@@ -58,15 +61,18 @@
   (async done
     (go (let [stream (<! (ws/connect "ws://localhost:3200"))]
           (a/close! (:out stream))
-          (is (= (<! (:close-status stream)) {:code 1000, :reason "Closed by creator"}))
+          (is (= (<! (:close-status stream))
+                 {:code 1000, :reason "Closed by creator"}))
           (is (ap/closed? (:in stream)))
           (done)))))
 
 (deftest test-chans-not-closed
   (async done
-    (go (let [stream (<! (ws/connect "ws://localhost:3200" {:close-chan? false}))]
+    (go (let [stream (<! (ws/connect "ws://localhost:3200"
+                                     {:close-chan? false}))]
           (ws/close stream)
-          (is (= (<! (:close-status stream)) {:code 1000, :reason "Closed by creator"}))
+          (is (= (<! (:close-status stream))
+                 {:code 1000, :reason "Closed by creator"}))
           (is (not (ap/closed? (:out stream))))
           (is (not (ap/closed? (:in stream))))
           (done)))))
