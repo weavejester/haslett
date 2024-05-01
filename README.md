@@ -7,7 +7,11 @@ A lightweight WebSocket library for ClojureScript that uses
 
 ## Installation
 
-Add the following dependency to your `project.clj` file:
+Add the following dependency to your deps.edn file:
+
+    haslett/haslett {:mvn/version "0.1.7"}
+
+Or to your Leiningen project file:
 
     [haslett "0.1.7"]
 
