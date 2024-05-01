@@ -1,6 +1,4 @@
-# Haslett
-
-[![Build Status](https://travis-ci.org/weavejester/haslett.svg?branch=master)](https://travis-ci.org/weavejester/haslett)
+# Haslett [![Build Status](https://github.com/weavejester/haslett/actions/workflows/test.yml/badge.svg)](https://github.com/weavejester/haslett/actions/workflows/test.yml)
 
 A lightweight WebSocket library for ClojureScript that uses
 [core.async][].
