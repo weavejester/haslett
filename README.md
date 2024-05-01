@@ -55,7 +55,7 @@ Transit:
 
 You can customize the behaviour further by supplying your own channels
 for the source and sink. This allows you to tune the channel buffer,
-and add tranducers:
+and add transducers:
 
 ```clojure
 (ws/connect "ws://echo.websocket.org"
