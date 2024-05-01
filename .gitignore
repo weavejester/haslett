@@ -10,5 +10,4 @@ pom.xml.asc
 .hgignore
 .hg/
 /node_modules
-/package-lock.json
 /.clj-kondo
